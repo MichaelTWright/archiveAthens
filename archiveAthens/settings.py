@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 """
 
 import os
+from decouple import config, Csv
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -131,8 +132,10 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'apps/archive_app/static/archive_app'),
 ]
 
-AWS_ACCESS_KEY_ID = 'AKIAJUG72M5ZSWVHN5OQ'
-AWS_SECRET_ACCESS_KEY = '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'
+AWS_ACCESS_KEY_ID = config('ACCESS_KEY')
+
+AWS_SECRET_ACCESS_KEY = config('SECRET_ACCESS_KEY')
+
 AWS_STORAGE_BUCKET_NAME = 'archive-app-assets'
 AWS_S3_CUSTOM_DOMAIN = 'archive-app-assets.s3.amazonaws.com' 
 AWS_DEFAULT_ACL = None
