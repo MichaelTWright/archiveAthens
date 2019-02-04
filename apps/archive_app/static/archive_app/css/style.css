@@ -1,0 +1,67 @@
+.wrapper{
+    height: 100%; 
+    text-align: center;
+}
+
+nav {
+    width: 80%; display: inline-block; 
+    background:white;  
+}
+
+#fav_img{
+    width: 20px; 
+    height:auto;
+}
+
+#upload div{
+    width:250px; 
+    text-decoration: none; 
+    height: auto; 
+    background-color: #f8f9fa; 
+    display: inline-block;  
+    box-shadow: 3px 4px #88888879; 
+    margin-bottom: 50px; 
+    border-radius: 5px;
+}
+
+#upload_img{
+    width: 40px; 
+    height:auto;
+}
+
+#upload_form{
+    margin-left: auto; 
+    margin-right: auto; 
+    width:400px; 
+    text-decoration: none; 
+    height: auto; 
+    background-color: #f8f9fa; 
+    box-shadow: 3px 4px #88888879; 
+    margin-bottom: 50px; 
+    border-radius: 5px;
+}
+
+#formform{
+    width:300px; 
+    height: auto; 
+    display: inline-block;
+}
+
+#media{
+    width: 100%; 
+    display:inline-block; 
+    padding: 0 10% 0 10%;
+}
+
+.music_box{
+    text-align: center; 
+    margin: 20px 20px 20px 20px; 
+    width: 300px; 
+    text-decoration: none; 
+    height: auto; 
+    background-color: #f1f3f4; 
+    display: inline-block;  
+    box-shadow: 3px 4px #88888879; 
+    margin-bottom: 50px; 
+    border-radius: 5px;   
+}

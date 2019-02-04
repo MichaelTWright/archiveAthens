@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script>
+  $(document).ready(function(){
+
+      $('.favorite').click(function(e){
+              e.preventDefault();
+              let id = $(this).data('id');
+
+              var str = String("."+id); 
+              console.log(str);
+
+
+              $("."+id).hide();
+            
+              $.ajax({
+                      url: $(this).attr('href'), 
+                      success: function(serverResponse){
+                          console.log('success. serverResponse:', serverResponse)
+                          $("#"+id).html(serverResponse)
+                      }
+                  })
+
+      })
+  });
+  </script>
+
+       
+            {% for data in archive_data %}
+
+                <div style="text-align: center; margin: 20px 20px 20px 20px; width: 300px; text-decoration: none; height: auto; background-color: #f1f3f4; display: inline-block;  box-shadow: 0 3px 5px rgba(0,0,0,0.3); margin-bottom: 50px; border-radius: 5px;">
+
+                    <h5 style="margin:4px 0 4px; padding: 4px 7px;">{{data.title}}</h5>
+                    <img style="width:96%;" src="{{data.img.url}}" alt=""><br>
+                    <audio style="padding-top: 0px;" controls>
+                        <source src="{{data.audio.url}}" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                    </audio> 
+                    <p style="margin-top: 0px; display: inline-block;"><a href="/uploads/{{data.user.id}}">{{data.user.first_name}} {{data.user.last_name}}</a> | {{data.created_at|date:"M d, Y"}}</p>
+                    {% if logged == 1 %}
+                    <br>
+                    <a data-id="{{ data.id }}" class="favorite" href="/favorited/{{data.id}}"><img style="width: 25px; height:auto; margin-bottom: 16px;" src="\static\archive_app\img\fav_icon.png"></a>
+                  
+                    {% if data.favorited_users.all.count > 0 %}
+                    <p class="{{data.id}}" style="color: green; display: inline-block;"> {{data.favorited_users.all.count}}</p>
+                    {% endif %}
+                    <div style="display: inline-block;" id="{{data.id}}"></div>
+                    {% endif %}
+              
+                </div>
+            {% endfor %}
+            <br>
+            <div style="display: inline-block;">
+               
+               {% if archive_data.has_other_pages %}
+                 <ul class="pagination">
+                   {% if archive_data.has_previous %}
+                     <li class="page-item"><a class="page-link" href="?page={{ archive_data.previous_page_number }}">&laquo;</a></li>
+                   {% else %}
+                     <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
+                   {% endif %}
+                   {% for i in archive_data.paginator.page_range %}
+                     {% if archive_data.number == i %}
+                       <li class="page-item active"><span class="page-link">{{ i }} <span class="sr-only">(current)</span></span></li>
+                     {% else %}
+                       <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                     {% endif %}
+                   {% endfor %}
+                   {% if archive_data.has_next %}
+                     <li class="page-item"><a class="page-link" href="?page={{ archive_data.next_page_number }}">&raquo;</a></li>
+                   {% else %}
+                     <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
+                   {% endif %}
+                 </ul>
+               {% endif %}
+            </div>
+
+</html>

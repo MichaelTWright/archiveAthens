@@ -1,0 +1,279 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://formden.com/static/cdn/font-awesome/4.4.0/css/font-awesome.min.css" />
+  <link href="{% static 'css/fav_icon.png' %}"  rel="stylesheet" />
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script>
+  $(document).ready(function(){
+      $("#upload_form").hide();
+      $("#upload").click(function(){
+          $("#upload").hide();
+          $("#upload_form").show();
+      });
+
+       $(".close").click(function(){
+          $("#upload_form").hide();
+          $("#upload").show();
+      });
+
+      $('.favorite').click(function(e){
+              e.preventDefault();
+              let id = $(this).data('id');
+
+              var str = String("."+id); 
+              console.log(str);
+
+
+              $("."+id).hide();
+            
+              $.ajax({
+                      url: $(this).attr('href'), 
+                      success: function(serverResponse){
+                          console.log('success. serverResponse:', serverResponse)
+                          $("#"+id).html(serverResponse)
+                      }
+                  })
+
+      })
+  });
+  </script>
+  <title>archiveAthens</title>
+</head>
+<body style="background-image: url('{% static 'img/wall.png' %}');  background-size: 100%;">
+
+  <div  style=" height: 100%; text-align: center;"> 
+      <nav class="navbar navbar-expand-lg navbar-light "  style="width: 80%; display: inline-block; background:white;">
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+              <li class="nav-item active">
+                <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+              </li>
+              {% if logged == 0 %}
+            
+          <li class="nav-item">
+            <a class="nav-link" href="/register">Sign Up</a>
+          </li>
+          {% endif %}
+          {% if logged == 1 %}
+          <li class="nav-item">
+            <a class="nav-link" href="/favorites">myFavorites <img style="width: 20px; height:auto;" src="{% static 'img/fav_icon.png' %}"></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/uploads/{{user.id}}">myUploads <img style="width: 20px; height:auto;" src="{% static 'img/upload_icon.png' %}"></a>
+          </li>
+          {% endif %}
+        </ul>
+        
+        {% if logged == 0 %}
+        <form action="/login" method="POST" class="form-inline my-2 my-lg-0">
+          {% csrf_token %}
+          <input class="form-control mr-sm-2" type="text" placeholder="Email" name="email">
+          <input class="form-control mr-sm-2" type="password" placeholder="Password" name="password">
+          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Login</button>
+        </form>
+        {% endif %}
+        {% if logged == 1 %}
+        <p class="my-2 my-lg-0" style="margin-right: 20px;">Welcome, {{ user.first_name }}.</p>
+        <form action="/logout" method="POST" class="form-inline my-2 my-lg-0">
+          {% csrf_token %}
+          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Log Out</button>
+        </form>
+        {% endif %}
+        
+        
+        
+      </div>
+    </nav>
+    <h1 class="display-4"><b style="color: #c21411;">archive</b>Athens</h1> <br>
+    <div style="text-align: center; margin-top: 10px;">
+    {% if messages %}
+      {% for message in messages %}
+      <p style="color: red;">*{{ message.message }}</p>
+      {% endfor %}
+    {% endif %}
+
+    {% if logged == 1 %}
+    <a id="upload"><div style="width:250px; text-decoration: none; height: auto; background-color: #f8f9fa; display: inline-block;  box-shadow: 0 3px 5px rgba(0,0,0,0.3); margin-bottom: 50px; border-radius: 5px;">
+        <br>
+            <h4 style="text-decoration: none;">Upload your audio</h4>
+            <img style="width: 40px; height:auto;" src="{% static 'img/upload_icon.png' %}">
+        <br>
+        <br>
+    </div></a> 
+    <div id="upload_form" style="margin-left: auto; margin-right: auto; width:400px; text-decoration: none; height: auto; background-color: #f8f9fa; box-shadow: 0 3px 5px rgba(0,0,0,0.3); margin-bottom: 50px; border-radius: 5px;">
+        <button type="button" class="close" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+      <br>
+        <div style="width:300px; height: auto; display: inline-block;">
+        <form action="/archive_create" method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
+  
+          <div class="form-group">
+              <label for="disabledTextInput"><b>Title</b></label> 
+              <input type="text" class="form-control" name ="title">
+            </div>
+            <label><b>Image</b> </label> 
+            <div class="custom-file">
+                <input type="file" class="custom-file-input" name ="img" id="inputGroupFile01">
+                <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
+            </div>
+            <script>
+                $('#inputGroupFile01').on('change',function(){
+                    //get the file name
+                    var fileName = $(this).val();
+                    //replace the "Choose a file" label
+                    $(this).next('.custom-file-label').html(fileName);
+                })
+            </script>
+            <br><br>
+          
+            <label><b>Audio</b></label> 
+            <div class="custom-file" style='margin-bottom: 15px;'>
+                <input type="file" class="custom-file-input" name ="audio" id="inputGroupFile02">
+                <label class="custom-file-label" for="inputGroupFile02">Choose file</label>
+  
+            </div>
+            <script>
+                $('#inputGroupFile02').on('change',function(){
+                    //get the file name
+                    var fileName = $(this).val();
+                    //replace the "Choose a file" label
+                    $(this).next('.custom-file-label').html(fileName);
+                })
+            </script>
+            <br><br>
+            <input type="hidden" name="hidden" value={{user.id}}>
+          
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit" data-loading-text="Uploading...">Upload</button>
+            <br>
+            <br>
+      </form>
+    </div>
+    </div>
+    <br>
+    {% endif %}
+
+
+
+
+    <script>
+      $(".btn").on('click', function () {
+        var dataLoadingText = $(this).attr("data-loading-text");
+        if (typeof dataLoadingText !== typeof undefined && dataLoadingText !== false) {
+          console.log(dataLoadingText);
+          $(this).text(dataLoadingText).addClass("disabled");
+        }
+      });
+    </script>
+
+        
+      <form id='myForm' style="display:inline-block;" class="form-inline" action="/find">
+        {% csrf_token %}
+        
+            <i class="fa fa-search"></i><input name='search' id='search' class="form-control form-control-sm ml-3 w-75" type="text" placeholder="Search..." aria-label="Search">
+         
+      </form>
+      <br>
+      <br>
+
+
+<!-- MEDIA MEDIA MEDIA -->
+        <div style="width: 100%; display:inline-block; padding: 0 10% 0 10%;">
+          <div style="margin-top: 25px;" id="placeholder1"></div>
+ 
+          <script>
+              $('#search').keyup(function(e){
+                $("#showAll").hide();
+
+                  $.ajax({
+                      url: '/find', 
+                      method: 'post', 
+                      data: $(this).parent().serialize(),
+                      success: function(serverResponse){
+                          console.log('success. serverResponse:', serverResponse)
+                          $('#placeholder1').html(serverResponse)
+                      }
+                  })
+              })
+  
+          </script>
+
+          <div style="margin-top: 25px;" id="showAll">
+
+            {% if archive_data %}
+            {% for data in archive_data %}
+  
+                <div style="text-align: center; margin: 20px 20px 20px 20px; width: 300px; text-decoration: none; height: auto; background-color: #f1f3f4; display: inline-block; box-shadow: 0 3px 5px rgba(0,0,0,0.3); margin-bottom: 50px; border-radius: 5px;">
+  
+                    <h5 style="margin:4px 0 4px; padding: 4px 7px;">{{data.title}}</h5>
+                    <img style="width:96%;" src="{{data.img.url}}" alt=""><br>
+                    <audio style="padding-top: 0px;" controls>
+                        <source src="{{data.audio.url}}" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                    </audio> 
+                    <p style="margin-top: 0px; display: inline-block;"><a href="/uploads/{{data.user.id}}">{{data.user.first_name}} {{data.user.last_name}}</a> | {{data.created_at|date:"M d, Y"}}</p> 
+                    {% if logged == 1 %} 
+                    <br>
+                    <a data-id="{{ data.id }}" class="favorite" href="/favorited/{{data.id}}"><img style="width: 25px; height:auto; margin-bottom: 16px;" src="{% static 'img/fav_icon.png' %}"></a>
+                    
+                    {% if data.favorited_users.all.count > 0 %}
+                    <p class="{{data.id}}" style="color: green; display: inline-block; margin-bottom: 10px;"> {{data.favorited_users.all.count}}</p>
+                    {% endif %}
+                  
+                    <div style="display: inline-block; margin-bottom: 0;" id="{{data.id}}"></div>
+                
+                    {% endif %}
+                
+                </div>
+            {% endfor %}
+            {% endif %}
+            <br>
+           <div style="display: inline-block;">
+              
+              {% if archive_data.has_other_pages %}
+                <ul class="pagination">
+                  {% if archive_data.has_previous %}
+                    <li class="page-item"><a class="page-link" href="?page={{ archive_data.previous_page_number }}">&laquo;</a></li>
+                  {% else %}
+                    <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
+                  {% endif %}
+                  {% for i in archive_data.paginator.page_range %}
+                    {% if archive_data.number == i %}
+                      <li class="page-item active"><span class="page-link">{{ i }} <span class="sr-only">(current)</span></span></li>
+                    {% else %}
+                      <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                    {% endif %}
+                  {% endfor %}
+                  {% if archive_data.has_next %}
+                    <li class="page-item"><a class="page-link" href="?page={{ archive_data.next_page_number }}">&raquo;</a></li>
+                  {% else %}
+                    <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
+                  {% endif %}
+                </ul>
+              {% endif %}
+           </div>
+          </div>
+
+        </div>
+          
+                  
+       
+
+  </div>
+      
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+</body>
+</html>
