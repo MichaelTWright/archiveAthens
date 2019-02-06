@@ -118,15 +118,8 @@ def favorited(request,id):
             "count": a.favorited_users.all().count()
         }
     return render(request, "archive_app/likes.html", context)
-    # return redirect('/')
 
-def uploads(request,id):
-    context = {
-        "logged": 1,
-        "user": User.objects.get(id=id),
-        "archive_data": Archive.objects.order_by("-created_at").all(),
-    }
-    return render(request, 'archive_app/uploads.html', context)
+
 
 def favorites(request):
     user= User.objects.get(id=request.session['user_id'])
@@ -167,12 +160,19 @@ def uploads(request,id):
                     "logUser" : logUser, 
                 }
                 return render(request, 'archive_app/uploads.html', context)
+        else: 
+            context = {
+                    "logged": 2,
+                    "user" : user, 
+                    "uploads" : uploads, 
+                }
+            return render(request, 'archive_app/uploads.html', context)
     except: 
         context = {
-                "logged": 2,
-                "user" : user, 
-                "uploads" : uploads, 
-            }
+                    "logged": 2,
+                    "user" : user, 
+                    "uploads" : uploads, 
+                }
         return render(request, 'archive_app/uploads.html', context)
     
 
@@ -193,18 +193,24 @@ def find(request):
         data = paginator.page(1)
     except EmptyPage:
         data = paginator.page(paginator.num_pages)
-
-    if request.session['user_id']:
+    try:
+        if request.session['user_id']:
+            context = {
+                        "logged": 1,
+                        "archive_data" : data,
+                    }
+            return render(request, "archive_app/all.html", context)
+        else:
+            context = {
+                        "logged": 0,
+                        "archive_data" : data,
+                    }
+            return render(request, "archive_app/all.html", context)
+    except:
         context = {
-                    "logged": 1,
-                    "archive_data" : data,
-                }
-        return render(request, "archive_app/all.html", context)
-    else:
-        context = {
-                    "logged": 0,
-                    "archive_data" : data,
-                }
+                        "logged": 0,
+                        "archive_data" : data,
+                    }
         return render(request, "archive_app/all.html", context)
 def like(request):
     context = {
@@ -213,17 +219,6 @@ def like(request):
     return render(request, "archive_app/likes.html", context)
 
 
-# class DocumentCreateView(CreateView):
-#     model = Document
-#     fields = ['upload', ]
-#     success_url = reverse_lazy('home')
-
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         documents = Document.objects.all()
-#         context['documents'] = documents
-#         return context
-    
 
 
   

@@ -25,10 +25,10 @@
             <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
           </li>
           <li class="nav-item">
-              <a class="nav-link" href="/favorites">myFavorites <img style="width: 20px; height:auto;" src="\static\archive_app\img\fav_icon.png"></a>
+              <a class="nav-link" href="/favorites">myFavorites <img style="width: 20px; height:auto;" src="{% static 'img/fav_icon.png' %}"></a>
           </li>
           <li class="nav-item">
-              <a class="nav-link" href="/uploads/{{user.id}}">myUploads <img style="width: 20px; height:auto;" src="\static\archive_app\img\upload_icon.png"></a>
+              <a class="nav-link" href="/uploads/{{user.id}}">myUploads <img style="width: 20px; height:auto;" src="{% static 'img/upload_icon.png' %}"></a>
           </li>
         </ul>
         <p class="my-2 my-lg-0" style="margin-right: 20px;">{{ user.first_name }}'s Favorites</p>
@@ -52,7 +52,7 @@
                         <source src="{{data.audio.url}}" type="audio/mpeg">
                             Your browser does not support the audio element.
                         </audio> 
-                        <p style="margin-top: 0px; display: inline-block;"><a href="/uploads/{{data.user.id}}">{{data.user.first_name}} {{data.user.last_name}}</a> | {{data.created_at|date:"M d, Y"}}</p> {% if logged == 1 %} <br><a id="favorite" href="/favorited/{{data.id}}"><img style="width: 25px; height:auto; margin-bottom: 16px;" src="\static\archive_app\img\fav_icon.png"></a>
+                        <p style="margin-top: 0px; display: inline-block;"><a href="/uploads/{{data.user.id}}">{{data.user.first_name}} {{data.user.last_name}}</a> | {{data.created_at|date:"M d, Y"}}</p> {% if logged == 1 %} <br><a id="favorite" href="/favorited/{{data.id}}"><img style="width: 25px; height:auto; margin-bottom: 16px;" src="{% static 'img/fav_icon.png' %}"></a>
                         
                         
                         {% if data.favorited_users.all.count > 0 %}
