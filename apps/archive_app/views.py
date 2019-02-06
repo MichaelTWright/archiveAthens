@@ -21,18 +21,25 @@ def index(request):
         data = paginator.page(1)
     except EmptyPage:
         data = paginator.page(paginator.num_pages)
-
-    if request.session['user_id']:
-        print("im in session")
-        context = {
-            "logged": 1,
-            "user": User.objects.get(id=request.session['user_id']),
-            "archive_data": data,
-            
-            # "archive_data": Archive.objects.order_by("-created_at").filter(title__startswith=request.POST['bird']),
-        }
-        return render(request, 'archive_app/home.html', context)
-    else:
+    try:
+        if request.session['user_id']:
+            print("im in session")
+            context = {
+                "logged": 1,
+                "user": User.objects.get(id=request.session['user_id']),
+                "archive_data": data,
+                
+                # "archive_data": Archive.objects.order_by("-created_at").filter(title__startswith=request.POST['bird']),
+            }
+            return render(request, 'archive_app/home.html', context)
+        else:
+            print("im not in session")
+            context = {
+                "logged": 0, 
+                "archive_data": data,
+            }
+            return render(request, 'archive_app/home.html', context)
+    except:
         print("im not in session")
         context = {
             "logged": 0, 
@@ -141,25 +148,26 @@ def unlike(request,id):
 def uploads(request,id):
     user = User.objects.get(id=id)
     uploads= user.uploads.all()
-    if request.session['user_id']:
-        logUser = User.objects.get(id=request.session['user_id'])
-        if int(id) == request.session['user_id']:
-            context = {
-                "logged": 1,
-                "user" : user, 
-                "uploads" : uploads, 
-                "logUser" : logUser, 
-            }
-            return render(request, 'archive_app/uploads.html', context)
-        else: 
-            context = {
-                "logged": 0,
-                "user" : user, 
-                "uploads" : uploads, 
-                "logUser" : logUser, 
-            }
-            return render(request, 'archive_app/uploads.html', context)
-    else: 
+    try:
+        if request.session['user_id']:
+            logUser = User.objects.get(id=request.session['user_id'])
+            if int(id) == request.session['user_id']:
+                context = {
+                    "logged": 1,
+                    "user" : user, 
+                    "uploads" : uploads, 
+                    "logUser" : logUser, 
+                }
+                return render(request, 'archive_app/uploads.html', context)
+            else: 
+                context = {
+                    "logged": 0,
+                    "user" : user, 
+                    "uploads" : uploads, 
+                    "logUser" : logUser, 
+                }
+                return render(request, 'archive_app/uploads.html', context)
+    except: 
         context = {
                 "logged": 2,
                 "user" : user, 

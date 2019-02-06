@@ -11,7 +11,9 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 """
 
 import os
-from decouple import config, Csv
+from decouple_aws import get_config
+
+config = get_config('your-project/secret/name', 'ap-southeast-2')
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -118,15 +120,7 @@ USE_L10N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.10/howto/static-files/
 
-# STATIC_URL = '/static/'
-# MEDIA_URL = '/media/'
-# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
-
-# STATIC_ROOT = "/apps/archive_app/static/archive_app/"
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'apps/archive_app/static/archive_app'),
@@ -151,4 +145,3 @@ STATIC_URL = "https://archive-app-assets.s3.amazonaws.com/static/"
 
 DEFAULT_FILE_STORAGE = 'archiveAthens.storage_backends.MediaStorage'
 
-# DEFAULT_FILE_STORAGE = 'archiveAthens.storage_backends.PublicMediaStorage'
